@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 function Diary(){
 	this._entries = [];
 	this.entry = function(body, date){
@@ -41,16 +43,42 @@ function Diary(){
 		return _entriesWithTag;
 	}
 	this.date = function(date) {
-	    console.log(`value of date is ${ date.constructor }`);
-	    let dateString = date.toDateString();
-	    let _entriesForDate = [];
-	    this._entries.forEach((entry) => {
-	        if (entry.time.toDateString() == dateString) {
-	            _entriesForDate.push(entry);
-	        }
-	    });
-	    return _entriesForDate;
+    let inputDateString = new Date(date).toDateString();	    
+    let _entriesForDate = [];
+    this._entries.forEach((entry) => {
+    	let entryDateString = new Date(entry.time).toDateString();
+      if (entryDateString == inputDateString) {
+          _entriesForDate.push(entry);
+      }
+    });
+    return _entriesForDate;
 	};
+
+	this.today = function(){
+		return this.date(Date.now());
+	}
+
+	this.search = function(word){
+		let regex = new RegExp('[^a-zA-Z0-9]*' + word + '[^a-zA-Z0-9]*', 'i');
+		let _entriesWithWord = [];
+		this._entries.forEach((entry) => {
+			if (regex.test(entry.body)) {
+				_entriesWithWord.push(entry);
+			}
+		})
+		return _entriesWithWord;
+	}
+
+	this.save = function(filename) {
+		let dataToSave = JSON.stringify(this._entries)
+		fs.writeFileSync(`./files/${filename}`, dataToSave, 'utf8');
+	}
+
+	this.load = function(filename) {
+		let loadedEntries = fs.readFileSync(`./files/${filename}`);
+		loadedEntries = JSON.parse(loadedEntries);
+		this._entries = loadedEntries;
+	}
 	
 }
 

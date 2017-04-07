@@ -1,4 +1,5 @@
 const diaryData = ("./data/testdata");
+const fs = require('fs');
 
 
 const Diary = require('../diaryBackend');
@@ -6,7 +7,7 @@ const Diary = require('../diaryBackend');
 
 
 describe('Diary', function(){
-    var diary;
+  var diary;
 
 	beforeEach(function(){
 		diary = new Diary();
@@ -197,13 +198,11 @@ describe('Diary', function(){
 	    
 // 	});
 	describe("date method", function() {
-	    let date;
-	    beforeEach(function(){
-	        date = Date.parse("Mon, 25 Dec 1995 13:30:00 GMT");
+    let date;
+    beforeEach(function(){
+      date = Date.parse("Mon, 25 Dec 1995 13:30:00 GMT");
 			diary.entry("I'm standing outside Brad's house #yolo", date);
 			diary.entry("OMG. What have I done? #sorrynotsorry", date);
-			diary.entry("What if dogs were not dogs? #dogs I done? #sorrynotsorry", date);
-			diary.entry("What if dogs were not dogs? ###dogs", date);
 			diary.entry(" # some stuff i guess", date);
 			diary.entry(" # some stuff i guess", Date.parse("Mon, 25 Dec 1995 00:30:00 GMT"));
 		});
@@ -214,13 +213,86 @@ describe('Diary', function(){
 		
 		    
 		it("returns entries for the specified dated", function() {
-		    expect(diary.date(date).length).toEqual(6);
+		    expect(diary.date(date).length).toEqual(4);
 		});
-	    
-	    
+	    	    
 	});
+
+	describe("today method", function() {
+    let date;
+    beforeEach(function(){
+
+		});
+		
+		it("returns any empty array if there are no entries for today", function() {
+		  date = Date.parse("Mon, 25 Dec 1995 13:30:00 GMT");
+			diary.entry("I'm standing outside Brad's house #yolo", date);
+			diary.entry("OMG. What have I done? #sorrynotsorry", date);
+			diary.entry(" # some stuff i guess", date);
+			diary.entry(" # some stuff i guess", Date.parse("Mon, 25 Dec 1995 00:30:00 GMT"));
+		  expect(diary.today()).toEqual([]);
+		})
+		
+		    
+		it("returns entries for today", function() {
+			date = Date.now();
+			diary.entry("I'm standing outside Brad's house #yolo", date);
+			diary.entry("OMG. What have I done? #sorrynotsorry", date);
+			diary.entry(" # some stuff i guess", date);
+			diary.entry(" # some stuff i guess", Date.parse("Mon, 25 Dec 1995 00:30:00 GMT"));
+		  expect(diary.today().length).toEqual(3);
+		});
+	    	    
+	});
+
+	describe('search by word method', function(){
+		beforeEach(function(){
+			diary.entry("I'm standing outside Brad's house #yolo");
+			diary.entry("OMG. What have I done? #sorrynotsorry");
+			diary.entry("What if dogs were not dogs? #dogs I done? #sorrynotsorry");
+			diary.entry("What if dogs were not dogs? ###dogs");
+			diary.entry(" # some stuff i guess");
+		});
+		
+		it("returns empty array if word not found", function(){
+			expect(diary.search("bunnies")).toEqual([]);
+		})
+
+		it("returns list of entries with given word", function(){
+			expect(diary.search("what").length).toEqual(3);
+		})
+
+	})
+
+	describe('save and load', function(){
+		let stringifiedEntries;
+
+		beforeEach(function(){
+			diary.entry("I'm standing outside Brad's house #yolo");
+			diary.entry("OMG. What have I done? #sorrynotsorry");
+			diary.entry("What if dogs were not dogs? #dogs I done? #sorrynotsorry");
+			diary.entry("What if dogs were not dogs? ###dogs");
+			diary.entry(" # some stuff i guess");
+			diary.save('savetest.json');
+			stringifiedEntries = JSON.stringify(diary._entries);
+		})
+
+		it('saves the file correctly', function(){
+			let savedDiary = fs.readFileSync('./files/savetest.json', 'utf8');
+			expect(savedDiary).toEqual(stringifiedEntries);
+		})
+
+		it('loads the file correctly', function(){			
+			diary.load('savetest.json');
+			let loadedStringifiedEntries = JSON.stringify(diary._entries);
+			expect(loadedStringifiedEntries).toEqual(stringifiedEntries);
+		})
+
+	})
+
 	
 });
+
 
 
 
