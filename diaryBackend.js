@@ -1,8 +1,9 @@
 function Diary(){
 	this.entries = [];
-	this.entry = function(body){
+	this.entry = function(body, date){
 		var newMessage = {};
 		newMessage.body = body;
+		newMessage.time = Date.now();
 		this.entries.push(newMessage);
 	}
 }
