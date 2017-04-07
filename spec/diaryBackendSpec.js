@@ -117,8 +117,8 @@ describe('Diary', function(){
     			diary.entry("I'm standing outside Brad's house #yolo");
     			diary.entry("OMG. What have I done? #sorrynotsorry");
     			diary.entry("What if dogs were not dogs? #dogs I done? #sorrynotsorry");
-					diary.entry("What if dogs were not dogs? ###dogs");
-					diary.entry(" # some stuff i guess");
+				diary.entry("What if dogs were not dogs? ###dogs");
+				diary.entry(" # some stuff i guess");
     		});
     		
     		it("returns the correct number of entries", function() {
@@ -183,14 +183,42 @@ describe('Diary', function(){
 
 		it ("returns an empty array if tag doesn't exist", function(){
 			expect(diary.entriesWithTag('bananas')).toEqual([]);
-		})
+		});
 
 		it ("returns the correct number of entries if tag exists", function(){
 			expect(diary.entriesWithTag('dogs').length).toEqual(2);
+		});
+
+
+	});
+// 	describe("get entries by today method", function() {
+	    
+// 	    it("returns ")
+	    
+// 	});
+	describe("date method", function() {
+	    let date;
+	    beforeEach(function(){
+	        date = Date.parse("Mon, 25 Dec 1995 13:30:00 GMT");
+			diary.entry("I'm standing outside Brad's house #yolo", date);
+			diary.entry("OMG. What have I done? #sorrynotsorry", date);
+			diary.entry("What if dogs were not dogs? #dogs I done? #sorrynotsorry", date);
+			diary.entry("What if dogs were not dogs? ###dogs", date);
+			diary.entry(" # some stuff i guess", date);
+			diary.entry(" # some stuff i guess", Date.parse("Mon, 25 Dec 1995 00:30:00 GMT"));
+		});
+		
+		it("returns any empty array if there are no entries for that date", function() {
+		    expect(diary.date(Date.now())).toEqual([]);
 		})
-
-
-	})
+		
+		    
+		it("returns entries for the specified dated", function() {
+		    expect(diary.date(date).length).toEqual(6);
+		});
+	    
+	    
+	});
 	
 });
 

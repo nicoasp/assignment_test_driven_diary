@@ -40,6 +40,18 @@ function Diary(){
 		})
 		return _entriesWithTag;
 	}
+	this.date = function(date) {
+	    console.log(`value of date is ${ date.constructor }`);
+	    let dateString = date.toDateString();
+	    let _entriesForDate = [];
+	    this._entries.forEach((entry) => {
+	        if (entry.time.toDateString() == dateString) {
+	            _entriesForDate.push(entry);
+	        }
+	    });
+	    return _entriesForDate;
+	};
+	
 }
 
 
