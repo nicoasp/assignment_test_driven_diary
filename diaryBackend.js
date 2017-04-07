@@ -1,5 +1,5 @@
 function Diary(){
-	this.entries = [];
+	this._entries = [];
 	this.entry = function(body, date){
 		var newMessage = {};
 		newMessage.body = body;
@@ -15,7 +15,10 @@ function Diary(){
 			})
 		}
 		
-		this.entries.push(newMessage);
+		this._entries.push(newMessage);
+	}
+	this.entries = function() {
+	    return this._entries;
 	}
 }
 
