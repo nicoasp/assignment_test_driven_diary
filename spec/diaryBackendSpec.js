@@ -1,0 +1,1 @@
+const Diary = require('../diaryBackend');
